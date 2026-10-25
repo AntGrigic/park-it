@@ -1,0 +1,170 @@
+.wrap {
+  overflow: hidden;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 14px 16px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+thead th {
+  padding-block: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  background: var(--surface-2);
+}
+
+tbody tr {
+  border-top: 1px solid var(--line);
+  transition: background 0.15s var(--ease);
+
+  &:hover {
+    background: color-mix(in srgb, var(--surface-2) 60%, transparent);
+  }
+}
+
+.col-rank {
+  width: 64px;
+  text-align: center;
+}
+
+.col-player {
+  font-weight: 600;
+}
+
+.col-attempt,
+.col-total {
+  width: 15%;
+  text-align: right;
+}
+
+.rank {
+  --medal: transparent;
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text-2);
+
+  &[data-rank='1'],
+  &[data-rank='2'],
+  &[data-rank='3'] {
+    color: var(--on-medal);
+    background: var(--medal);
+  }
+  &[data-rank='1'] {
+    --medal: var(--gold);
+  }
+  &[data-rank='2'] {
+    --medal: var(--silver);
+  }
+  &[data-rank='3'] {
+    --medal: var(--bronze);
+  }
+}
+
+.col-attempt,
+.col-total {
+  > span {
+    display: block;
+  }
+}
+
+.attempt-total {
+  font-weight: 600;
+}
+
+.discs,
+.progress {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.pending {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--amber);
+}
+
+.empty {
+  color: var(--text-3);
+}
+
+.total {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.running {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--amber);
+}
+
+.is-unranked {
+  .name,
+  .col-attempt {
+    color: var(--text-2);
+  }
+}
+
+.empty-row {
+  padding: 40px 16px;
+  text-align: center;
+  color: var(--text-2);
+}
+
+.mobile-attempts {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .col-attempt {
+    display: none;
+  }
+
+  th,
+  td {
+    padding: 12px 10px;
+  }
+
+  .col-rank {
+    width: 48px;
+  }
+
+  .mobile-attempts {
+    display: flex;
+    gap: 6px;
+    margin-top: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-3);
+
+    span {
+      padding: 1px 7px;
+      border-radius: 999px;
+      background: var(--surface-2);
+    }
+  }
+
+  .name {
+    display: block;
+  }
+}

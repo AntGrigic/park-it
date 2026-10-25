@@ -1,0 +1,168 @@
+:host {
+  display: block;
+}
+
+.page {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 28px;
+  padding-block: 40px 24px;
+}
+
+.hero {
+  display: grid;
+  gap: 12px;
+  padding-top: 8px;
+
+  h1 {
+    font-size: clamp(44px, 9vw, 84px);
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    line-height: 1;
+  }
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  app-brand-mark {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+.status {
+  --tone: var(--mint);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px 5px 10px;
+  border: 1px solid color-mix(in srgb, var(--tone) 35%, transparent);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--tone);
+  background: color-mix(in srgb, var(--tone) 10%, transparent);
+
+  &.is-demo {
+    --tone: var(--amber);
+  }
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--tone);
+  box-shadow: 0 0 0 0 var(--tone);
+  animation: pulse 2s infinite;
+}
+
+.tagline {
+  max-width: 560px;
+  font-size: 17px;
+  color: var(--text-2);
+}
+
+.section {
+  display: grid;
+  gap: 14px;
+}
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+
+  h2 {
+    font-size: 22px;
+  }
+}
+
+.hint {
+  font-size: 13px;
+  color: var(--text-3);
+}
+
+.skeleton {
+  display: grid;
+  gap: 10px;
+}
+
+.skeleton-row {
+  height: 56px;
+  border-radius: var(--radius);
+  background: linear-gradient(90deg, var(--surface-2), var(--surface-3), var(--surface-2)) 0 0 /
+    200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+.error {
+  display: flex;
+  gap: 14px;
+  padding: 20px;
+  color: var(--text-2);
+
+  app-icon {
+    color: var(--danger);
+  }
+
+  strong {
+    color: var(--text);
+  }
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 4px 0;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--text-3);
+}
+
+// Intentionally faint: the admin entry is there for those who know to look.
+.admin-link {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  color: var(--text-3);
+  opacity: 0.25;
+  transition:
+    opacity 0.2s var(--ease),
+    color 0.2s var(--ease);
+
+  app-icon {
+    width: 15px;
+    height: 15px;
+  }
+
+  &:hover,
+  &:focus-visible {
+    opacity: 1;
+    color: var(--violet);
+  }
+}
+
+@keyframes pulse {
+  70% {
+    box-shadow: 0 0 0 7px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}

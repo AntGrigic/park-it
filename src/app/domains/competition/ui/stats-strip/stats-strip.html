@@ -1,0 +1,29 @@
+@let summary = stats();
+<dl class="strip">
+  <div class="tile">
+    <dt class="eyebrow">Players</dt>
+    <dd class="value tnum">{{ summary.players }}</dd>
+    <dd class="sub">on the board</dd>
+  </div>
+  <div class="tile">
+    <dt class="eyebrow">Attempts</dt>
+    <dd class="value tnum">{{ summary.completedAttempts }}</dd>
+    <dd class="sub">completed</dd>
+  </div>
+  <div class="tile tile-accent">
+    <dt class="eyebrow">Leading score</dt>
+    <dd class="value tnum">{{ summary.leader?.score ?? '—' }}</dd>
+    <dd class="sub">{{ summary.leader?.name ?? 'Waiting for the first attempt' }}</dd>
+  </div>
+  <div class="tile">
+    <dt class="eyebrow">Closest disc</dt>
+    <dd class="value tnum">
+      @if (summary.closestDisc; as closest) {
+        {{ closest.points }}<span class="unit">cm</span>
+      } @else {
+        —
+      }
+    </dd>
+    <dd class="sub">{{ summary.closestDisc?.name ?? 'No discs thrown yet' }}</dd>
+  </div>
+</dl>

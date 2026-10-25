@@ -1,0 +1,14 @@
+<ol class="podium" [attr.data-count]="entries().length">
+  @for (entry of entries(); track entry.playerId; let place = $index) {
+    <li class="spot" [attr.data-place]="place + 1" [attr.data-rank]="entry.rank">
+      <div class="medal tnum" [attr.aria-label]="'Rank ' + entry.rank">{{ entry.rank }}</div>
+      <p class="name">{{ entry.name }}</p>
+      <p class="score tnum">{{ entry.total }}<span class="unit">pts</span></p>
+      <ul class="attempts" aria-label="Attempt totals">
+        @for (attempt of entry.attempts; track $index) {
+          <li class="tnum">{{ attempt.total ?? '—' }}</li>
+        }
+      </ul>
+    </li>
+  }
+</ol>

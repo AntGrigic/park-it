@@ -1,0 +1,29 @@
+@let gameRules = rules();
+<section class="rules card" aria-labelledby="rules-title">
+  <h2 id="rules-title">How Park it! works</h2>
+  <ol class="steps">
+    <li style="--hue: var(--violet)">
+      <span class="badge"><app-icon name="repeat" /></span>
+      <strong>{{ gameRules.attemptsPerPlayer }} attempts</strong>
+      <span>Every player gets {{ gameRules.attemptsPerPlayer }} goes at the pin.</span>
+    </li>
+    <li style="--hue: var(--pink)">
+      <span class="badge"><app-icon name="disc" /></span>
+      <strong>{{ gameRules.discsPerAttempt }} discs each</strong>
+      <span>Each attempt scores the sum of its {{ gameRules.discsPerAttempt }} discs.</span>
+    </li>
+    <li style="--hue: var(--amber)">
+      <span class="badge"><app-icon name="ruler" /></span>
+      <strong>1 point per cm</strong>
+      <span>10 cm from the pin is 10 points. Outside 3 m is {{ gameRules.maxDiscPoints }}.</span>
+    </li>
+    <li style="--hue: var(--mint)">
+      <span class="badge"><app-icon name="trophy" /></span>
+      <strong>Lowest total wins</strong>
+      <span
+        >All {{ gameRules.attemptsPerPlayer }} attempts are added up. Equal totals go to the better
+        single attempt.</span
+      >
+    </li>
+  </ol>
+</section>

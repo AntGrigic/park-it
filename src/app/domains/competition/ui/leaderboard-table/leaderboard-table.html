@@ -1,0 +1,69 @@
+<div class="wrap card">
+  <table>
+    <caption class="sr-only">
+      Standings, lowest total first
+    </caption>
+    <thead>
+      <tr>
+        <th scope="col" class="col-rank">#</th>
+        <th scope="col" class="col-player">Player</th>
+        @for (attemptNumber of attemptNumbers(); track attemptNumber) {
+          <th scope="col" class="col-attempt">Attempt {{ attemptNumber }}</th>
+        }
+        <th scope="col" class="col-total">Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (entry of entries(); track entry.playerId) {
+        <tr [class.is-unranked]="entry.rank === null">
+          <td class="col-rank">
+            <span class="rank tnum" [attr.data-rank]="entry.rank">{{ entry.rank ?? '–' }}</span>
+          </td>
+          <th scope="row" class="col-player">
+            <span class="name">{{ entry.name }}</span>
+            <span class="mobile-attempts tnum">
+              @for (attempt of entry.attempts; track $index) {
+                <span>
+                  {{
+                    attempt.total ??
+                      (attempt.thrown ? attempt.thrown + '/' + discsPerAttempt() : '—')
+                  }}
+                </span>
+              }
+            </span>
+          </th>
+          @for (attempt of entry.attempts; track $index) {
+            <td class="col-attempt">
+              @if (attempt.total !== null) {
+                <span class="attempt-total tnum">{{ attempt.total }}</span>
+              } @else if (attempt.thrown > 0) {
+                <span class="pending">In play · {{ attempt.thrown }}/{{ discsPerAttempt() }}</span>
+              } @else {
+                <span class="empty">—</span>
+              }
+              @if (attempt.thrown > 0) {
+                <span class="discs tnum">{{ formatDiscs(attempt.discs) }}</span>
+              }
+            </td>
+          }
+          <td class="col-total">
+            @if (entry.total !== null) {
+              <span class="total tnum">{{ entry.total }}</span>
+            } @else if (entry.discsThrown > 0) {
+              <span class="running tnum">{{ entry.runningTotal }}</span>
+              <span class="progress tnum">{{ entry.discsThrown }}/{{ totalDiscs() }} discs</span>
+            } @else {
+              <span class="empty">—</span>
+            }
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td class="empty-row" [attr.colspan]="attemptsPerPlayer() + 3">
+            No players yet — the board fills up as soon as the first disc lands.
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

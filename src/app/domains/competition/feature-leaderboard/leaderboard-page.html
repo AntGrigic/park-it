@@ -1,0 +1,64 @@
+<main class="container page">
+  <header class="hero">
+    <div class="brand">
+      <app-brand-mark />
+      <span class="status" [class.is-demo]="demoMode">
+        <span class="dot"></span>{{ demoMode ? 'Demo board' : 'Live' }}
+      </span>
+    </div>
+    <h1><span class="gradient-text">Park it!</span></h1>
+    <p class="tagline">
+      Three attempts, three discs, one pin. Closest to the pin wins — lowest score leads.
+    </p>
+  </header>
+
+  @switch (store.status()) {
+    @case ('loading') {
+      <div class="skeleton" aria-label="Loading leaderboard">
+        @for (row of [1, 2, 3, 4, 5]; track row) {
+          <div class="skeleton-row"></div>
+        }
+      </div>
+    }
+    @case ('error') {
+      <div class="error card" role="alert">
+        <app-icon name="alert" />
+        <div>
+          <strong>The leaderboard could not be loaded.</strong>
+          <p>{{ store.error() }}</p>
+        </div>
+      </div>
+    }
+    @default {
+      <app-stats-strip [stats]="store.stats()" />
+
+      @if (store.podium().length) {
+        <section class="section" aria-labelledby="podium-title">
+          <h2 id="podium-title" class="sr-only">Podium</h2>
+          <app-podium [entries]="store.podium()" />
+        </section>
+      }
+
+      <section class="section" aria-labelledby="standings-title">
+        <div class="section-head">
+          <h2 id="standings-title">Standings</h2>
+          <span class="hint">All 3 attempts added up · lowest total wins</span>
+        </div>
+        <app-leaderboard-table
+          [entries]="store.leaderboard()"
+          [attemptsPerPlayer]="rules.attemptsPerPlayer"
+          [discsPerAttempt]="rules.discsPerAttempt"
+        />
+      </section>
+    }
+  }
+
+  <app-rules-card class="section" [rules]="rules" />
+
+  <footer class="footer">
+    <span>Park it! · closest to the pin</span>
+    <a class="admin-link" routerLink="/admin" aria-label="Admin" title="Admin">
+      <app-icon name="lock" />
+    </a>
+  </footer>
+</main>
