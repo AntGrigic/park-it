@@ -1,0 +1,60 @@
+<div class="page">
+  <section class="intro card">
+    <div class="intro-text">
+      <h1>Players &amp; scores</h1>
+      <p>
+        Enter each disc's distance to the pin in cm — that is its score. Anything outside 3 m counts
+        as {{ rules.maxDiscPoints }}. A player is ranked once all {{ rules.attemptsPerPlayer }}
+        attempts are in.
+      </p>
+    </div>
+    <app-add-player-form [takenNames]="takenNames()" (add)="add($event)" />
+  </section>
+
+  @switch (store.status()) {
+    @case ('loading') {
+      <p class="muted">Loading players…</p>
+    }
+    @case ('error') {
+      <p class="muted" role="alert">{{ store.error() }}</p>
+    }
+    @default {
+      <div class="toolbar">
+        <h2>
+          {{ store.players().length }}
+          {{ store.players().length === 1 ? 'player' : 'players' }}
+        </h2>
+        <label class="search">
+          <app-icon name="search" />
+          <span class="sr-only">Find a player</span>
+          <input
+            type="search"
+            placeholder="Find a player"
+            [value]="query()"
+            (input)="search($event)"
+          />
+        </label>
+      </div>
+
+      <div class="list">
+        @for (player of visiblePlayers(); track player.id) {
+          <app-player-score-editor
+            [player]="player"
+            [rank]="ranks().get(player.id) ?? null"
+            [saving]="store.isSaving(player.id)"
+            (save)="save($event)"
+            (remove)="remove($event)"
+          />
+        } @empty {
+          <p class="muted empty">
+            {{
+              query()
+                ? 'No player matches “' + query() + '”.'
+                : 'No players yet. Add the first one above.'
+            }}
+          </p>
+        }
+      </div>
+    }
+  }
+</div>

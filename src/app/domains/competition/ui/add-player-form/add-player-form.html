@@ -1,0 +1,25 @@
+<form class="add" [formGroup]="form" (ngSubmit)="submit()">
+  <label class="sr-only" for="new-player-name">New player name</label>
+  <input
+    id="new-player-name"
+    class="input"
+    formControlName="name"
+    placeholder="New player name"
+    autocomplete="off"
+    [maxLength]="maxLength"
+  />
+  <button class="btn btn-primary" type="submit">
+    <app-icon name="plus" />
+    Add player
+  </button>
+  @let name = form.controls.name;
+  @if (name.touched && name.errors; as errors) {
+    <p class="field-error">
+      @if (errors['taken']) {
+        That player is already on the board.
+      } @else {
+        Enter a name (up to {{ maxLength }} characters).
+      }
+    </p>
+  }
+</form>

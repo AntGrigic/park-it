@@ -1,0 +1,26 @@
+<header class="bar">
+  <div class="container bar-inner">
+    <a class="brand" routerLink="/admin">
+      <app-brand-mark />
+      <span class="title">Park it!</span>
+      <span class="pill">Admin</span>
+    </a>
+    <nav class="actions">
+      @if (auth.email(); as email) {
+        <span class="email">{{ email }}</span>
+      }
+      <a class="btn btn-ghost btn-sm" routerLink="/">
+        <app-icon name="external" />
+        <span class="label">Leaderboard</span>
+      </a>
+      <button class="btn btn-sm" type="button" (click)="signOut()">
+        <app-icon name="logout" />
+        <span class="label">Sign out</span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main class="container content">
+  <router-outlet />
+</main>

@@ -1,0 +1,83 @@
+@let currentDraft = draft();
+<form class="editor" [class.is-dirty]="dirty()" (submit)="submit($event)">
+  <header class="head">
+    <span
+      class="rank tnum"
+      [attr.data-rank]="rank()"
+      [attr.aria-label]="'Rank ' + (rank() ?? 'none')"
+    >
+      {{ rank() ?? '–' }}
+    </span>
+    <label class="sr-only" [for]="'name-' + player().id">Player name</label>
+    <input
+      class="name"
+      [id]="'name-' + player().id"
+      [value]="currentDraft.name"
+      [maxLength]="maxNameLength"
+      [class.is-invalid]="!nameValid()"
+      autocomplete="off"
+      (input)="setName($event)"
+    />
+    <div class="score" [class.is-running]="total() === null">
+      <span class="eyebrow">{{ total() === null ? 'So far' : 'Total' }}</span>
+      <strong class="tnum">{{ total() ?? running() }}</strong>
+    </div>
+  </header>
+
+  <div class="attempts">
+    @for (attempt of currentDraft.attempts; track $index; let attemptIndex = $index) {
+      <fieldset class="attempt">
+        <legend>Attempt {{ attemptIndex + 1 }}</legend>
+        <div class="discs">
+          @for (disc of attempt.discs; track $index; let discIndex = $index) {
+            <label class="disc">
+              <span class="sr-only"
+                >Attempt {{ attemptIndex + 1 }}, disc {{ discIndex + 1 }}, distance in cm</span
+              >
+              <input
+                type="number"
+                inputmode="numeric"
+                min="0"
+                step="1"
+                placeholder="cm"
+                class="tnum"
+                [max]="rules.maxDiscPoints"
+                [value]="disc ?? ''"
+                (input)="setDisc(attemptIndex, discIndex, $event)"
+              />
+            </label>
+          }
+        </div>
+        <output class="total tnum">{{ totals()[attemptIndex] ?? '—' }}</output>
+      </fieldset>
+    }
+  </div>
+
+  <footer class="foot">
+    <button
+      type="button"
+      class="btn btn-danger btn-sm"
+      [class.is-armed]="confirmingDelete()"
+      [disabled]="saving()"
+      (click)="requestDelete()"
+    >
+      <app-icon name="trash" />
+      {{ confirmingDelete() ? 'Click again to remove' : 'Remove' }}
+    </button>
+    <span class="spacer"></span>
+    @if (dirty()) {
+      <button type="button" class="btn btn-ghost btn-sm" [disabled]="saving()" (click)="reset()">
+        <app-icon name="undo" />
+        Undo
+      </button>
+    }
+    <button
+      type="submit"
+      class="btn btn-primary btn-sm"
+      [disabled]="!dirty() || !nameValid() || saving()"
+    >
+      <app-icon name="check" />
+      {{ saving() ? 'Saving…' : 'Save' }}
+    </button>
+  </footer>
+</form>
