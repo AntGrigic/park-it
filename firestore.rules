@@ -1,0 +1,35 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // An admin is a signed-in user with a document at admins/{uid}.
+    // Create those documents by hand in the Firebase console.
+    function isAdmin() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    function isValidPlayer(data) {
+      return data.keys().hasOnly(['name', 'attempts', 'createdAt', 'updatedAt'])
+        && data.name is string
+        && data.name.size() > 0
+        && data.name.size() <= 40
+        && data.attempts is list
+        && data.attempts.size() == 3;
+    }
+
+    // Anyone can watch the leaderboard; only admins can change it.
+    match /players/{playerId} {
+      allow read: if true;
+      allow create, update: if isAdmin() && isValidPlayer(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    // Users may only check their own admin status; nobody can grant it from the app.
+    match /admins/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false;
+    }
+  }
+}
