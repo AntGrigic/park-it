@@ -1,0 +1,72 @@
+.stack {
+  position: fixed;
+  inset: auto 16px 20px;
+  z-index: 50;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: min(440px, 100%);
+  padding: 10px 10px 10px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: blur(14px);
+  box-shadow: var(--shadow);
+  font-size: 14px;
+  font-weight: 500;
+  pointer-events: auto;
+  animation: toast-in 0.25s var(--ease);
+
+  > app-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  &[data-kind='success'] > app-icon {
+    color: var(--mint);
+  }
+
+  &[data-kind='error'] > app-icon {
+    color: var(--danger);
+  }
+}
+
+.message {
+  flex: 1;
+}
+
+.close {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 8px;
+  color: var(--text-3);
+  background: transparent;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--text);
+    background: var(--surface-2);
+  }
+
+  app-icon {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}

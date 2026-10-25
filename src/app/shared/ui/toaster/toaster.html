@@ -1,0 +1,11 @@
+<div class="stack" role="status" aria-live="polite">
+  @for (toast of store.toasts(); track toast.id) {
+    <div class="toast" [attr.data-kind]="toast.kind">
+      <app-icon [name]="toast.kind === 'success' ? 'check' : 'alert'" />
+      <span class="message">{{ toast.message }}</span>
+      <button type="button" class="close" aria-label="Dismiss" (click)="store.dismiss(toast.id)">
+        <app-icon name="x" />
+      </button>
+    </div>
+  }
+</div>
