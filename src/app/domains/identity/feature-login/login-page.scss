@@ -1,0 +1,60 @@
+.screen {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 20px;
+  min-height: 100dvh;
+  padding: 32px 16px;
+}
+
+.panel {
+  display: grid;
+  gap: 24px;
+  width: min(400px, calc(100vw - 32px));
+  padding: 32px 28px;
+}
+
+.head {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  text-align: center;
+
+  app-brand-mark {
+    width: 52px;
+    height: 52px;
+    margin-bottom: 4px;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+
+  p {
+    font-size: 14px;
+    color: var(--text-2);
+  }
+
+  .gradient-text {
+    font-weight: 700;
+  }
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-2);
+  text-decoration: none;
+
+  app-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  &:hover {
+    color: var(--text);
+  }
+}

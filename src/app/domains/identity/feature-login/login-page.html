@@ -1,0 +1,22 @@
+<main class="screen">
+  <section class="panel card">
+    <header class="head">
+      <app-brand-mark />
+      <h1>Admin sign in</h1>
+      <p>Manage players and record scores for <span class="gradient-text">Park it!</span></p>
+    </header>
+
+    <app-login-form
+      [pending]="auth.pending()"
+      [error]="auth.error()"
+      [demoCredentials]="auth.demoCredentials"
+      (submitted)="signIn($event)"
+      (edited)="auth.error() && auth.clearError()"
+    />
+  </section>
+
+  <a class="back" routerLink="/">
+    <app-icon name="arrow-left" />
+    Back to leaderboard
+  </a>
+</main>

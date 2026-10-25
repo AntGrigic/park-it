@@ -1,0 +1,33 @@
+.form {
+  display: grid;
+  gap: 16px;
+}
+
+.submit {
+  height: 46px;
+  margin-top: 4px;
+}
+
+.alert {
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 10%, transparent);
+}
+
+.demo {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+  padding: 14px;
+  border: 1px dashed color-mix(in srgb, var(--amber) 50%, transparent);
+  border-radius: 12px;
+  font-size: 13px;
+  color: var(--text-2);
+  background: color-mix(in srgb, var(--amber) 7%, transparent);
+
+  strong {
+    color: var(--amber);
+  }
+}

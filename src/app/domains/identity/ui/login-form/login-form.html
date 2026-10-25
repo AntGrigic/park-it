@@ -1,0 +1,50 @@
+<form class="form" [formGroup]="form" (ngSubmit)="submit()" (input)="edited.emit()">
+  <div class="field">
+    <label class="label" for="login-email">Email</label>
+    <input
+      id="login-email"
+      class="input"
+      type="email"
+      formControlName="email"
+      autocomplete="username"
+      placeholder="you@example.com"
+    />
+    @if (form.controls.email.touched && form.controls.email.invalid) {
+      <span class="field-error">Enter a valid email.</span>
+    }
+  </div>
+
+  <div class="field">
+    <label class="label" for="login-password">Password</label>
+    <input
+      id="login-password"
+      class="input"
+      type="password"
+      formControlName="password"
+      autocomplete="current-password"
+    />
+    @if (form.controls.password.touched && form.controls.password.invalid) {
+      <span class="field-error">Enter your password.</span>
+    }
+  </div>
+
+  @if (error(); as message) {
+    <p class="alert" role="alert">{{ message }}</p>
+  }
+
+  <button class="btn btn-primary submit" type="submit" [disabled]="pending()">
+    {{ pending() ? 'Signing in…' : 'Sign in' }}
+  </button>
+
+  @if (demoCredentials(); as demo) {
+    <div class="demo">
+      <p>
+        <strong>Demo mode.</strong> No Firebase project is connected yet, so scores are saved in
+        this browser only.
+      </p>
+      <button class="btn btn-ghost btn-sm" type="button" (click)="useDemo(demo)">
+        Fill in demo admin
+      </button>
+    </div>
+  }
+</form>
