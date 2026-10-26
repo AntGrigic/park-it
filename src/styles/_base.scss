@@ -93,6 +93,32 @@ a {
   color: var(--text-3);
 }
 
+// Division code next to a player's name; each division gets its own accent.
+.division-badge {
+  --tone: var(--text-2);
+  display: inline-block;
+  flex: none;
+  padding: 1px 7px;
+  border-radius: 6px;
+  font: 700 11px/1.5 var(--font-body);
+  letter-spacing: 0.04em;
+  color: var(--tone);
+  background: color-mix(in srgb, var(--tone) 14%, transparent);
+
+  &[data-division='MPO'] {
+    --tone: var(--violet);
+  }
+  &[data-division='FPO'] {
+    --tone: var(--pink);
+  }
+  &[data-division='RPA'] {
+    --tone: var(--amber);
+  }
+  &[data-division='RAD'] {
+    --tone: var(--mint);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

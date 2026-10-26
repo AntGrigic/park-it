@@ -42,6 +42,13 @@ tbody tr {
   font-weight: 600;
 }
 
+.name-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+}
+
 .col-attempt,
 .col-total {
   width: 15%;

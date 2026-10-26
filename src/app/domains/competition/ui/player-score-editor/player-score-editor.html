@@ -18,6 +18,12 @@
       autocomplete="off"
       (input)="setName($event)"
     />
+    @if (player().division; as division) {
+      <span class="division-badge" [attr.data-division]="division">{{ division }}</span>
+    }
+    @if (player().pdgaNumber; as pdgaNumber) {
+      <span class="pdga tnum" title="PDGA number">#{{ pdgaNumber }}</span>
+    }
     <div class="score" [class.is-running]="total() === null">
       <span class="eyebrow">{{ total() === null ? 'So far' : 'Total' }}</span>
       <strong class="tnum">{{ total() ?? running() }}</strong>

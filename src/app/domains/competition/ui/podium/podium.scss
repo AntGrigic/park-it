@@ -91,11 +91,18 @@
 }
 
 .name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   max-width: 100%;
+  font-weight: 600;
+}
+
+.name-text {
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-weight: 600;
 }
 
 .score {

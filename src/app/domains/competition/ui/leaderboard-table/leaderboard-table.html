@@ -20,7 +20,12 @@
             <span class="rank tnum" [attr.data-rank]="entry.rank">{{ entry.rank ?? '–' }}</span>
           </td>
           <th scope="row" class="col-player">
-            <span class="name">{{ entry.name }}</span>
+            <span class="name-line">
+              <span class="name">{{ entry.name }}</span>
+              @if (entry.division; as division) {
+                <span class="division-badge" [attr.data-division]="division">{{ division }}</span>
+              }
+            </span>
             <span class="mobile-attempts tnum">
               @for (attempt of entry.attempts; track $index) {
                 <span>
