@@ -25,6 +25,9 @@
               @if (entry.division; as division) {
                 <span class="division-badge" [attr.data-division]="division">{{ division }}</span>
               }
+              @if (entry.pdgaNumber; as pdgaNumber) {
+                <app-pdga-link [pdgaNumber]="pdgaNumber" [playerName]="entry.name" />
+              }
             </span>
             <span class="mobile-attempts tnum">
               @for (attempt of entry.attempts; track $index) {

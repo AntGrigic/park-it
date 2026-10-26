@@ -57,6 +57,13 @@ export function normalizePdgaNumber(raw: unknown): string | null {
   return /^\d{1,9}$/.test(pdgaNumber) ? pdgaNumber : null;
 }
 
+const PDGA_PROFILE_URL = 'https://www.pdga.com/player/';
+
+/** The player's public profile on pdga.com. */
+export function pdgaProfileUrl(pdgaNumber: string): string {
+  return `${PDGA_PROFILE_URL}${encodeURIComponent(pdgaNumber)}`;
+}
+
 /** Names are unique on the board, ignoring case and extra whitespace. */
 export function isNameTaken(players: readonly Player[], raw: string, exceptId?: PlayerId): boolean {
   const key = normalizePlayerName(raw).toLocaleLowerCase();

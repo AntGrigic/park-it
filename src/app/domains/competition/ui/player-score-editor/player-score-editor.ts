@@ -21,6 +21,7 @@ import {
   type ScoreSheet,
 } from '../../domain/player';
 import { attemptTotal, playerTotal, runningTotal, toDiscPoints } from '../../domain/scoring';
+import { PdgaLink } from '../pdga-link/pdga-link';
 
 export interface PlayerChanges extends ScoreSheet {
   readonly id: PlayerId;
@@ -31,7 +32,7 @@ const DELETE_CONFIRM_WINDOW_MS = 4000;
 /** Edits one player's name and disc scores. Keeps a local draft until saved. */
 @Component({
   selector: 'app-player-score-editor',
-  imports: [Icon],
+  imports: [Icon, PdgaLink],
   templateUrl: './player-score-editor.html',
   styleUrl: './player-score-editor.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

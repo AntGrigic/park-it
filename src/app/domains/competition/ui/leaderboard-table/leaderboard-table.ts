@@ -1,9 +1,11 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import type { DiscPoints } from '../../domain/player';
 import type { LeaderboardEntry } from '../../domain/ranking';
+import { PdgaLink } from '../pdga-link/pdga-link';
 
 @Component({
   selector: 'app-leaderboard-table',
+  imports: [PdgaLink],
   templateUrl: './leaderboard-table.html',
   styleUrl: './leaderboard-table.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

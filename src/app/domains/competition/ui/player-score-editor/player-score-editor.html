@@ -22,7 +22,7 @@
       <span class="division-badge" [attr.data-division]="division">{{ division }}</span>
     }
     @if (player().pdgaNumber; as pdgaNumber) {
-      <span class="pdga tnum" title="PDGA number">#{{ pdgaNumber }}</span>
+      <app-pdga-link class="pdga" [pdgaNumber]="pdgaNumber" [playerName]="player().name" />
     }
     <div class="score" [class.is-running]="total() === null">
       <span class="eyebrow">{{ total() === null ? 'So far' : 'Total' }}</span>

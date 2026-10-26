@@ -1,4 +1,10 @@
-import { createPlayerDraft, findMissingPlayers, type Player, type PlayerDraft } from './player';
+import {
+  createPlayerDraft,
+  findMissingPlayers,
+  pdgaProfileUrl,
+  type Player,
+  type PlayerDraft,
+} from './player';
 
 function onBoard(draft: PlayerDraft, id: string): Player {
   return { id, ...draft };
@@ -48,5 +54,11 @@ describe('findMissingPlayers', () => {
   it('returns nothing once everyone is on the board', () => {
     const board = [onBoard(ari, 'one'), onBoard(danica, 'two')];
     expect(findMissingPlayers(board, [ari, danica])).toEqual([]);
+  });
+});
+
+describe('pdgaProfileUrl', () => {
+  it('links to the player profile on pdga.com', () => {
+    expect(pdgaProfileUrl('242179')).toBe('https://www.pdga.com/player/242179');
   });
 });
