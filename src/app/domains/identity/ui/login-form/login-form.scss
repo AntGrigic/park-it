@@ -1,6 +1,42 @@
+.stack,
 .form {
   display: grid;
   gap: 16px;
+}
+
+.google {
+  height: 48px;
+  border-color: var(--line-strong);
+  background: var(--surface);
+  font-size: 15px;
+
+  &:hover:not(:disabled) {
+    background: var(--surface-2);
+  }
+}
+
+.google-logo {
+  width: 20px;
+  height: 20px;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-3);
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--line-strong);
+  }
 }
 
 .submit {
@@ -12,6 +48,7 @@
   padding: 10px 12px;
   border-radius: 10px;
   font-size: 14px;
+  overflow-wrap: anywhere;
   color: var(--danger);
   background: color-mix(in srgb, var(--danger) 10%, transparent);
 }

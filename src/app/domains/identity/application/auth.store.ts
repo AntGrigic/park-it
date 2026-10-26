@@ -36,37 +36,44 @@ export const AuthStore = signalStore(
     isAdmin: computed(() => session()?.isAdmin === true),
     email: computed(() => session()?.email ?? null),
   })),
-  withMethods((store) => ({
-    _watch: rxMethod<void>(
-      pipe(
-        switchMap(() => store._gateway.session().pipe(catchError(() => of(null)))),
-        tap((session) =>
-          patchState(store, { session, status: session ? 'signed-in' : 'signed-out' }),
-        ),
-      ),
-    ),
-
-    async signIn(credentials: Credentials): Promise<boolean> {
+  withMethods((store) => {
+    /** Runs a sign-in, keeping `pending` and `error` in sync. Resolves to whether it worked. */
+    const runSignIn = async (signIn: () => Promise<AdminSession>): Promise<boolean> => {
       patchState(store, { pending: true, error: null });
       try {
-        const session = await store._gateway.signIn(credentials);
+        const session = await signIn();
         patchState(store, { session, status: 'signed-in', pending: false });
         return true;
       } catch (error) {
         patchState(store, { pending: false, error: describeError(error) });
         return false;
       }
-    },
+    };
 
-    async signOut(): Promise<void> {
-      await store._gateway.signOut();
-      patchState(store, { session: null, status: 'signed-out' });
-    },
+    return {
+      _watch: rxMethod<void>(
+        pipe(
+          switchMap(() => store._gateway.session().pipe(catchError(() => of(null)))),
+          tap((session) =>
+            patchState(store, { session, status: session ? 'signed-in' : 'signed-out' }),
+          ),
+        ),
+      ),
 
-    clearError(): void {
-      patchState(store, { error: null });
-    },
-  })),
+      signIn: (credentials: Credentials) => runSignIn(() => store._gateway.signIn(credentials)),
+
+      signInWithGoogle: () => runSignIn(() => store._gateway.signInWithGoogle()),
+
+      async signOut(): Promise<void> {
+        await store._gateway.signOut();
+        patchState(store, { session: null, status: 'signed-out' });
+      },
+
+      clearError(): void {
+        patchState(store, { error: null });
+      },
+    };
+  }),
   withHooks({
     onInit: (store) => store._watch(),
   }),

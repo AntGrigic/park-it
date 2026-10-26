@@ -11,6 +11,7 @@
       [error]="auth.error()"
       [demoCredentials]="auth.demoCredentials"
       (submitted)="signIn($event)"
+      (googleSignIn)="signInWithGoogle()"
       (edited)="auth.error() && auth.clearError()"
     />
   </section>

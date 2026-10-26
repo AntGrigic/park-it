@@ -9,5 +9,7 @@ export abstract class AuthGateway {
   abstract session(): Observable<AdminSession | null>;
   /** Signs in and resolves with an admin session, or rejects if the account is not an admin. */
   abstract signIn(credentials: Credentials): Promise<AdminSession>;
+  /** Signs in with a Google account; same admin check as {@link signIn}. */
+  abstract signInWithGoogle(): Promise<AdminSession>;
   abstract signOut(): Promise<void>;
 }

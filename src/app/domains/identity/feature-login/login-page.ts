@@ -22,4 +22,10 @@ export class LoginPage {
       await this.router.navigate(['/admin']);
     }
   }
+
+  protected async signInWithGoogle(): Promise<void> {
+    if (await this.auth.signInWithGoogle()) {
+      await this.router.navigate(['/admin']);
+    }
+  }
 }

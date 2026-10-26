@@ -14,6 +14,7 @@ export class LoginForm {
   readonly error = input<string | null>(null);
   readonly demoCredentials = input<Credentials | null>(null);
   readonly submitted = output<Credentials>();
+  readonly googleSignIn = output<void>();
   readonly edited = output<void>();
 
   protected readonly form = inject(NonNullableFormBuilder).group({

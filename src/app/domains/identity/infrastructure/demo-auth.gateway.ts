@@ -22,6 +22,16 @@ export class DemoAuthGateway extends AuthGateway {
     if (email.trim().toLowerCase() !== DEMO_ADMIN.email || password !== DEMO_ADMIN.password) {
       throw new DomainError('Wrong email or password.');
     }
+    return this.startSession();
+  }
+
+  /** There is no Google in demo mode: signs in as the demo admin. */
+  async signInWithGoogle(): Promise<AdminSession> {
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    return this.startSession();
+  }
+
+  private startSession(): AdminSession {
     const session: AdminSession = { uid: 'demo-admin', email: DEMO_ADMIN.email, isAdmin: true };
     this.persist(true);
     this.session$.next(session);
