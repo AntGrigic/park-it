@@ -1,0 +1,29 @@
+<section class="import" aria-labelledby="roster-import-title">
+  <span class="badge"><app-icon name="users" /></span>
+  <div class="text">
+    <h2 id="roster-import-title">Event roster</h2>
+    <p>
+      {{ missingCount() }} of {{ rosterSize() }} registered players
+      {{ missingCount() === 1 ? 'is' : 'are' }} not on the board yet.
+    </p>
+    @if (sampleThrowsCount() > 0) {
+      <label class="check">
+        <input
+          type="checkbox"
+          [checked]="includeSampleThrows()"
+          (change)="toggleSampleThrows($event)"
+        />
+        Add sample throws for {{ sampleThrowsCount() }} players, to try out the board
+      </label>
+    }
+  </div>
+  <button
+    class="btn btn-primary"
+    type="button"
+    [disabled]="importing()"
+    (click)="importRoster.emit(includeSampleThrows())"
+  >
+    <app-icon name="plus" />
+    {{ importing() ? 'Importing…' : 'Import ' + missingCount() + ' players' }}
+  </button>
+</section>

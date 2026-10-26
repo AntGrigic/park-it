@@ -19,6 +19,16 @@
       <p class="muted" role="alert">{{ store.error() }}</p>
     }
     @default {
+      @if (missingFromRoster() > 0) {
+        <app-roster-import-card
+          [missingCount]="missingFromRoster()"
+          [rosterSize]="eventRosterSize"
+          [sampleThrowsCount]="sampleThrowsCount"
+          [importing]="store.importing()"
+          (importRoster)="importRoster($event)"
+        />
+      }
+
       <div class="toolbar">
         <h2>
           {{ store.players().length }}
@@ -29,7 +39,7 @@
           <span class="sr-only">Find a player</span>
           <input
             type="search"
-            placeholder="Find a player"
+            placeholder="Find by name or PDGA #"
             [value]="query()"
             (input)="search($event)"
           />

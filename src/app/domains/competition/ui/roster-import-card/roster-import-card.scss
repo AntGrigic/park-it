@@ -1,0 +1,60 @@
+.import {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  border: 1px dashed color-mix(in srgb, var(--violet) 45%, transparent);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--violet) 6%, var(--surface));
+}
+
+.badge {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  color: var(--violet);
+  background: color-mix(in srgb, var(--violet) 14%, transparent);
+}
+
+.text {
+  display: grid;
+  gap: 4px;
+
+  h2 {
+    font-size: 17px;
+  }
+
+  p {
+    font-size: 14px;
+    color: var(--text-2);
+  }
+}
+
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--text-2);
+  cursor: pointer;
+
+  input {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--violet);
+  }
+}
+
+@media (max-width: 640px) {
+  .import {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .btn {
+    grid-column: 1 / -1;
+  }
+}

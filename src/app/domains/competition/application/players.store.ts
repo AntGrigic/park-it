@@ -15,9 +15,11 @@ import { DomainError } from '../../../shared/domain/domain-error';
 import { describeError } from '../../../shared/util/describe-error';
 import {
   createPlayerDraft,
+  findMissingPlayers,
   isNameTaken,
   toScoreSheet,
   type Player,
+  type PlayerDraft,
   type PlayerId,
   type ScoreSheet,
 } from '../domain/player';
@@ -31,6 +33,7 @@ interface PlayersState {
   readonly status: LoadStatus;
   readonly error: string | null;
   readonly savingIds: readonly PlayerId[];
+  readonly importing: boolean;
 }
 
 const initialState: PlayersState = {
@@ -38,6 +41,7 @@ const initialState: PlayersState = {
   status: 'loading',
   error: null,
   savingIds: [],
+  importing: false,
 };
 
 export const PlayersStore = signalStore(
@@ -112,6 +116,23 @@ export const PlayersStore = signalStore(
           await store._repository.add(draft);
           return `${draft.name} joined the board`;
         }),
+
+      /** Adds every roster entry not already on the board; safe to run more than once. */
+      importPlayers: async (roster: readonly PlayerDraft[]) => {
+        patchState(store, { importing: true });
+        try {
+          return await write(null, async () => {
+            const missing = findMissingPlayers(store.players(), roster);
+            if (missing.length === 0) {
+              return 'Everyone on the roster is already on the board';
+            }
+            await store._repository.addMany(missing);
+            return `Imported ${missing.length} ${missing.length === 1 ? 'player' : 'players'}`;
+          });
+        } finally {
+          patchState(store, { importing: false });
+        }
+      },
 
       updatePlayer: (id: PlayerId, changes: ScoreSheet) =>
         write(id, async () => {

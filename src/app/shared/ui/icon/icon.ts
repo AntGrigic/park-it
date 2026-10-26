@@ -16,6 +16,7 @@ export type IconName =
   | 'disc'
   | 'ruler'
   | 'repeat'
+  | 'users'
   | 'alert';
 
 /** Stroke icons drawn at 24×24; size them with CSS width/height on the host. */
@@ -103,6 +104,11 @@ export type IconName =
         @case ('repeat') {
           <path d="m17 2 4 4-4 4M3 11v-1a4 4 0 0 1 4-4h14" />
           <path d="m7 22-4-4 4-4M21 13v1a4 4 0 0 1-4 4H3" />
+        }
+        @case ('users') {
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8" />
         }
         @case ('alert') {
           <circle cx="12" cy="12" r="9" />
