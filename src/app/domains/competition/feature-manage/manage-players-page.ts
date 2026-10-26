@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+  untracked,
+} from '@angular/core';
 import { Icon } from '../../../shared/ui/icon/icon';
 import { PlayersStore } from '../application/players.store';
 import { PARK_IT_RULES } from '../domain/park-it.rules';
@@ -48,6 +56,21 @@ export class ManagePlayersPage {
   protected readonly missingFromRoster = computed(
     () => findMissingPlayers(this.store.players(), this.registeredPlayers).length,
   );
+  private readonly boardIsEmpty = computed(
+    () => this.store.status() === 'ready' && this.store.players().length === 0,
+  );
+  private seedRequested = false;
+
+  constructor() {
+    // A brand-new board starts from the event roster, sample throws included, so the first
+    // admin visit fills it without any clicks. Later gaps are filled from the import card.
+    effect(() => {
+      if (this.boardIsEmpty() && !this.seedRequested) {
+        this.seedRequested = true;
+        untracked(() => this.importRoster(true));
+      }
+    });
+  }
 
   protected search(event: Event): void {
     this.query.set((event.target as HTMLInputElement).value);
