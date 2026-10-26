@@ -14,8 +14,9 @@ and [`scoring.ts`](src/app/domains/competition/domain/scoring.ts).
   (or email). Admins import the event roster, add, rename and remove players and enter each
   disc's distance.
 - **Event roster**: the registered players (division and PDGA number) live in
-  [`event-roster.ts`](src/app/domains/competition/feature-manage/event-roster.ts). The admin page
-  offers to import whoever is not on the board yet, optionally with sample throws for 7 players.
+  [`event-roster.ts`](src/app/domains/competition/feature-manage/event-roster.ts). The first time an
+  admin opens an empty board it is filled from the roster, with sample throws for 7 players.
+  After that the admin page offers to import anyone who is missing.
 
 ## Stack
 
@@ -70,21 +71,16 @@ browser's local storage, and the sign-in page offers a "Fill in demo admin" butt
 1. Create a project at <https://console.firebase.google.com>.
 2. **Build → Firestore Database → Create database** (production mode).
 3. **Build → Authentication → Sign-in method →** enable **Google** (and/or **Email/Password**).
-4. Sign in once on the app's admin page. An account that is not an admin yet is told its
-   **UID** (also listed under **Authentication → Users**).
-5. **Firestore → Start collection** `admins`, add a document whose **ID is that UID**
-   (any field, e.g. `name: "Antonio"`). Only users listed here can change scores.
-6. **Firestore → Rules**: paste [`firestore.rules`](firestore.rules) and publish
-   (or `npx firebase-tools deploy --only firestore:rules --project <project-id>`).
-7. **Project settings → Your apps → Add web app**, then copy [`.env.example`](.env.example) to
+4. **Firestore → Rules**: paste [`firestore.rules`](firestore.rules), replace
+   `your.name@gmail.com` in `adminEmails()` with your Google address (lowercase; list more to add
+   admins), and publish. Admins live only in the rules — nothing about them is stored in the
+   database. Anyone else who signs in is told they are not on the admin list and signed out.
+5. **Project settings → Your apps → Add web app**, then copy [`.env.example`](.env.example) to
    `.env.local` and fill in the config values. `.env.local` is git-ignored;
    `npm start` / `npm run build` generate `src/environments/environment.ts` (also git-ignored) from it.
    These values end up in the browser anyway; the rules above are what protect the data.
-8. **Authentication → Settings → Authorized domains →** add `<your-user>.github.io`.
-
-Recommended: in **Authentication → Settings → User actions**, turn off **Enable create
-(sign-up)** so nobody can create accounts through the API. Non-admin accounts cannot write
-anyway, but this keeps the user list clean.
+6. **Authentication → Settings → Authorized domains →** add `<your-user>.github.io`.
+7. Sign in on the app's admin page. The empty board fills itself from the event roster.
 
 ## Deploy to GitHub Pages
 
