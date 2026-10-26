@@ -33,33 +33,17 @@
   }
 }
 
-.status {
-  --tone: var(--mint);
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 5px 12px 5px 10px;
-  border: 1px solid color-mix(in srgb, var(--tone) 35%, transparent);
+// Only shown without Firebase, so nobody mistakes browser-only data for the real board.
+.demo-badge {
+  padding: 5px 12px;
+  border: 1px solid color-mix(in srgb, var(--amber) 35%, transparent);
   border-radius: 999px;
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--tone);
-  background: color-mix(in srgb, var(--tone) 10%, transparent);
-
-  &.is-demo {
-    --tone: var(--amber);
-  }
-}
-
-.dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--tone);
-  box-shadow: 0 0 0 0 var(--tone);
-  animation: pulse 2s infinite;
+  color: var(--amber);
+  background: color-mix(in srgb, var(--amber) 10%, transparent);
 }
 
 .tagline {
@@ -149,15 +133,6 @@
   &:focus-visible {
     opacity: 1;
     color: var(--violet);
-  }
-}
-
-@keyframes pulse {
-  70% {
-    box-shadow: 0 0 0 7px transparent;
-  }
-  100% {
-    box-shadow: 0 0 0 0 transparent;
   }
 }
 

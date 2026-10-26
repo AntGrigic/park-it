@@ -2,9 +2,9 @@
   <header class="hero">
     <div class="brand">
       <app-brand-mark />
-      <span class="status" [class.is-demo]="demoMode">
-        <span class="dot"></span>{{ demoMode ? 'Demo board' : 'Live' }}
-      </span>
+      @if (demoMode) {
+        <span class="demo-badge">Demo board</span>
+      }
     </div>
     <h1><span class="gradient-text">Park it!</span></h1>
     <p class="tagline">
