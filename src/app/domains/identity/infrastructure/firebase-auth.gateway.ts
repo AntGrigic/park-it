@@ -8,16 +8,16 @@ import {
   signOut,
   type User,
 } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
-import { from, Observable, of, switchMap } from 'rxjs';
+import { doc, getDoc, type FirestoreError } from 'firebase/firestore';
+import { catchError, from, Observable, of, switchMap } from 'rxjs';
 import { FIREBASE_APP, FIRESTORE } from '../../../core/firebase/firebase';
 import { DomainError } from '../../../shared/domain/domain-error';
 import type { AdminSession, Credentials } from '../domain/admin-session';
 import { AuthGateway } from '../domain/auth.gateway';
 
 /**
- * Firebase Auth adapter. A user is an admin when a document `admins/{uid}` exists,
- * which is the same check `firestore.rules` uses to allow writes.
+ * Firebase Auth adapter. Who is an admin is decided by `firestore.rules` alone (an email
+ * list in `adminEmails()`), so nothing about admins is stored in the database.
  */
 @Injectable()
 export class FirebaseAuthGateway extends AuthGateway {
@@ -32,7 +32,12 @@ export class FirebaseAuthGateway extends AuthGateway {
         (user) => subscriber.next(user),
         (error) => subscriber.error(error),
       ),
-    ).pipe(switchMap((user) => (user ? from(this.toSession(user)) : of(null))));
+    ).pipe(
+      // If the admin check cannot run (e.g. offline), show signed-out rather than end the stream.
+      switchMap((user) =>
+        user ? from(this.toSession(user)).pipe(catchError(() => of(null))) : of(null),
+      ),
+    );
   }
 
   async signIn({ email, password }: Credentials): Promise<AdminSession> {
@@ -58,17 +63,26 @@ export class FirebaseAuthGateway extends AuthGateway {
     if (!session.isAdmin) {
       await signOut(this.auth);
       throw new DomainError(
-        `${user.email ?? 'This account'} is not an admin yet. To give it access, add a ` +
-          `Firestore document admins/${user.uid}.`,
+        `${user.email ?? 'This account'} is not on the admin list. Add it to adminEmails() ` +
+          `in the Firestore rules.`,
       );
     }
     return session;
   }
 
+  /**
+   * Asks the rules instead of the data: `adminAccess/{uid}` holds no documents and is
+   * readable only by admins, so the read succeeds exactly when this user may write.
+   */
   private async toSession(user: User): Promise<AdminSession> {
-    const isAdmin = await getDoc(doc(this.firestore, 'admins', user.uid)).then(
-      (snapshot) => snapshot.exists(),
-      () => false,
+    const isAdmin = await getDoc(doc(this.firestore, 'adminAccess', user.uid)).then(
+      () => true,
+      (error: unknown) => {
+        if ((error as FirestoreError).code === 'permission-denied') {
+          return false;
+        }
+        throw error;
+      },
     );
     return { uid: user.uid, email: user.email, isAdmin };
   }

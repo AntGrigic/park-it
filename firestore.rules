@@ -3,11 +3,17 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // An admin is a signed-in user with a document at admins/{uid}.
-    // Create those documents by hand in the Firebase console.
+    // Admins are the Google accounts listed here, signed in through Firebase Authentication.
+    // Nothing about them is stored in the database. Put your Gmail address here (lowercase)
+    // before publishing; add more addresses to give other people access.
+    function adminEmails() {
+      return ['your.name@gmail.com'];
+    }
+
     function isAdmin() {
       return request.auth != null
-        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+        && request.auth.token.email_verified == true
+        && request.auth.token.email.lower() in adminEmails();
     }
 
     function isValidPlayer(data) {
@@ -30,10 +36,10 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
-    // Users may only check their own admin status; nobody can grant it from the app.
-    match /admins/{uid} {
-      allow read: if request.auth != null && request.auth.uid == uid;
-      allow write: if false;
+    // Holds no documents. The app reads adminAccess/{uid} after sign-in only to ask these
+    // rules whether that user is an admin: the read is allowed exactly when isAdmin() is.
+    match /adminAccess/{userId} {
+      allow get: if request.auth != null && request.auth.uid == userId && isAdmin();
     }
   }
 }

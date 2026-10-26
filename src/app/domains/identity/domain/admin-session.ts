@@ -6,6 +6,6 @@ export interface Credentials {
 export interface AdminSession {
   readonly uid: string;
   readonly email: string | null;
-  /** Signed-in users only manage the board when they are listed as admins. */
+  /** Signed-in users only manage the board when their account is on the admin list. */
   readonly isAdmin: boolean;
 }
