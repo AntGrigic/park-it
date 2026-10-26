@@ -10,8 +10,12 @@ The rules live in one place: [`park-it.rules.ts`](src/app/domains/competition/do
 and [`scoring.ts`](src/app/domains/competition/domain/scoring.ts).
 
 - **Leaderboard** at `/`: podium, standings, stats. Updates live.
-- **Admin** at `/admin`: reached from the faint lock icon in the footer. Admins add, rename
-  and remove players and enter each disc's distance.
+- **Admin** at `/admin`: reached from the faint lock icon in the footer. Sign in with Google
+  (or email). Admins import the event roster, add, rename and remove players and enter each
+  disc's distance.
+- **Event roster**: the registered players (division and PDGA number) live in
+  [`event-roster.ts`](src/app/domains/competition/feature-manage/event-roster.ts). The admin page
+  offers to import whoever is not on the board yet, optionally with sample throws for 7 players.
 
 ## Stack
 
@@ -65,8 +69,9 @@ browser's local storage, and the sign-in page offers a "Fill in demo admin" butt
 
 1. Create a project at <https://console.firebase.google.com>.
 2. **Build → Firestore Database → Create database** (production mode).
-3. **Build → Authentication → Sign-in method →** enable **Email/Password**.
-4. **Authentication → Users → Add user** for each admin. Copy the user's **UID**.
+3. **Build → Authentication → Sign-in method →** enable **Google** (and/or **Email/Password**).
+4. Sign in once on the app's admin page. An account that is not an admin yet is told its
+   **UID** (also listed under **Authentication → Users**).
 5. **Firestore → Start collection** `admins`, add a document whose **ID is that UID**
    (any field, e.g. `name: "Antonio"`). Only users listed here can change scores.
 6. **Firestore → Rules**: paste [`firestore.rules`](firestore.rules) and publish
