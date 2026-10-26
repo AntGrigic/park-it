@@ -15,14 +15,14 @@ import {
   isValidPlayerName,
   PLAYER_NAME_MAX_LENGTH,
   recordDisc,
-  sameDraft,
+  sameScoreSheet,
   type Player,
-  type PlayerDraft,
   type PlayerId,
+  type ScoreSheet,
 } from '../../domain/player';
 import { attemptTotal, playerTotal, runningTotal, toDiscPoints } from '../../domain/scoring';
 
-export interface PlayerChanges extends PlayerDraft {
+export interface PlayerChanges extends ScoreSheet {
   readonly id: PlayerId;
 }
 
@@ -47,9 +47,9 @@ export class PlayerScoreEditor {
   protected readonly maxNameLength = PLAYER_NAME_MAX_LENGTH;
 
   /** Compared by value so live updates to other players don't wipe this draft. */
-  private readonly saved = computed<PlayerDraft>(
+  private readonly saved = computed<ScoreSheet>(
     () => ({ name: this.player().name, attempts: this.player().attempts }),
-    { equal: sameDraft },
+    { equal: sameScoreSheet },
   );
   protected readonly draft = linkedSignal(() => this.saved());
 
@@ -57,7 +57,7 @@ export class PlayerScoreEditor {
   protected readonly total = computed(() => playerTotal(this.draft().attempts));
   protected readonly running = computed(() => runningTotal(this.draft().attempts));
   protected readonly nameValid = computed(() => isValidPlayerName(this.draft().name));
-  protected readonly dirty = computed(() => !sameDraft(this.draft(), this.saved()));
+  protected readonly dirty = computed(() => !sameScoreSheet(this.draft(), this.saved()));
   protected readonly confirmingDelete = signal(false);
 
   private confirmTimer?: ReturnType<typeof setTimeout>;

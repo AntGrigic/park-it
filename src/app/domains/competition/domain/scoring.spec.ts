@@ -1,4 +1,4 @@
-import { recordDisc, emptyAttempts, normalizeAttempts, toPlayerDraft } from './player';
+import { recordDisc, emptyAttempts, normalizeAttempts, toScoreSheet } from './player';
 import { attemptTotal, bestAttempt, playerTotal, runningTotal, toDiscPoints } from './scoring';
 
 describe('scoring', () => {
@@ -56,7 +56,7 @@ describe('scoring', () => {
   });
 
   it('rejects blank player names', () => {
-    expect(() => toPlayerDraft('   ', emptyAttempts())).toThrowError(/name/);
-    expect(toPlayerDraft('  Ana   Marie ', emptyAttempts()).name).toBe('Ana Marie');
+    expect(() => toScoreSheet('   ', emptyAttempts())).toThrowError(/name/);
+    expect(toScoreSheet('  Ana   Marie ', emptyAttempts()).name).toBe('Ana Marie');
   });
 });

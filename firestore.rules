@@ -11,12 +11,16 @@ service cloud.firestore {
     }
 
     function isValidPlayer(data) {
-      return data.keys().hasOnly(['name', 'attempts', 'createdAt', 'updatedAt'])
+      return data.keys().hasOnly(['name', 'attempts', 'division', 'pdgaNumber', 'createdAt', 'updatedAt'])
         && data.name is string
         && data.name.size() > 0
         && data.name.size() <= 40
         && data.attempts is list
-        && data.attempts.size() == 3;
+        && data.attempts.size() == 3
+        && (data.get('division', null) == null
+          || (data.division is string && data.division.size() <= 10))
+        && (data.get('pdgaNumber', null) == null
+          || (data.pdgaNumber is string && data.pdgaNumber.size() <= 9));
     }
 
     // Anyone can watch the leaderboard; only admins can change it.

@@ -16,10 +16,10 @@ import { describeError } from '../../../shared/util/describe-error';
 import {
   createPlayerDraft,
   isNameTaken,
-  toPlayerDraft,
+  toScoreSheet,
   type Player,
-  type PlayerDraft,
   type PlayerId,
+  type ScoreSheet,
 } from '../domain/player';
 import { PlayerRepository } from '../domain/player.repository';
 import { rankPlayers, summarize } from '../domain/ranking';
@@ -82,9 +82,9 @@ export const PlayersStore = signalStore(
       }
     };
 
-    const assertUniqueName = (draft: PlayerDraft, exceptId?: PlayerId) => {
-      if (isNameTaken(store.players(), draft.name, exceptId)) {
-        throw new DomainError(`“${draft.name}” is already on the board.`);
+    const assertUniqueName = (name: string, exceptId?: PlayerId) => {
+      if (isNameTaken(store.players(), name, exceptId)) {
+        throw new DomainError(`“${name}” is already on the board.`);
       }
     };
 
@@ -107,18 +107,18 @@ export const PlayersStore = signalStore(
 
       addPlayer: (name: string) =>
         write(null, async () => {
-          const draft = createPlayerDraft(name);
-          assertUniqueName(draft);
+          const draft = createPlayerDraft({ name });
+          assertUniqueName(draft.name);
           await store._repository.add(draft);
           return `${draft.name} joined the board`;
         }),
 
-      updatePlayer: (id: PlayerId, changes: PlayerDraft) =>
+      updatePlayer: (id: PlayerId, changes: ScoreSheet) =>
         write(id, async () => {
-          const draft = toPlayerDraft(changes.name, changes.attempts);
-          assertUniqueName(draft, id);
-          await store._repository.update(id, draft);
-          return `Saved ${draft.name}`;
+          const sheet = toScoreSheet(changes.name, changes.attempts);
+          assertUniqueName(sheet.name, id);
+          await store._repository.update(id, sheet);
+          return `Saved ${sheet.name}`;
         }),
 
       removePlayer: (id: PlayerId) =>

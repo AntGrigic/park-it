@@ -7,16 +7,18 @@ import {
   onSnapshot,
   serverTimestamp,
   updateDoc,
+  writeBatch,
 } from 'firebase/firestore';
 import { Observable } from 'rxjs';
 import { FIRESTORE } from '../../../core/firebase/firebase';
-import type { Player, PlayerDraft, PlayerId } from '../domain/player';
+import type { Player, PlayerDraft, PlayerId, ScoreSheet } from '../domain/player';
 import { PlayerRepository } from '../domain/player.repository';
-import { fromPlayerDocument, toPlayerDocument } from './player.document';
+import { fromPlayerDocument, toPlayerDocument, toScoreSheetDocument } from './player.document';
 
 @Injectable()
 export class FirestorePlayerRepository extends PlayerRepository {
-  private readonly players = collection(inject(FIRESTORE), 'players');
+  private readonly firestore = inject(FIRESTORE);
+  private readonly players = collection(this.firestore, 'players');
 
   watchAll(): Observable<readonly Player[]> {
     return new Observable<readonly Player[]>((subscriber) =>
@@ -34,21 +36,34 @@ export class FirestorePlayerRepository extends PlayerRepository {
   }
 
   async add(draft: PlayerDraft): Promise<void> {
-    await addDoc(this.players, {
-      ...toPlayerDocument(draft),
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    });
+    await addDoc(this.players, this.newDocument(draft));
   }
 
-  async update(id: PlayerId, draft: PlayerDraft): Promise<void> {
+  async addMany(drafts: readonly PlayerDraft[]): Promise<void> {
+    // A single batch is atomic and allows up to 500 writes — far more than an event roster.
+    const batch = writeBatch(this.firestore);
+    for (const draft of drafts) {
+      batch.set(doc(this.players), this.newDocument(draft));
+    }
+    await batch.commit();
+  }
+
+  async update(id: PlayerId, sheet: ScoreSheet): Promise<void> {
     await updateDoc(doc(this.players, id), {
-      ...toPlayerDocument(draft),
+      ...toScoreSheetDocument(sheet),
       updatedAt: serverTimestamp(),
     });
   }
 
   async remove(id: PlayerId): Promise<void> {
     await deleteDoc(doc(this.players, id));
+  }
+
+  private newDocument(draft: PlayerDraft) {
+    return {
+      ...toPlayerDocument(draft),
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    };
   }
 }

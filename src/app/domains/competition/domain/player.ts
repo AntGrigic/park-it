@@ -14,16 +14,27 @@ export interface Attempt {
   readonly discs: readonly DiscPoints[];
 }
 
-export interface PlayerDraft {
+/** What an admin edits on a player's score sheet. */
+export interface ScoreSheet {
   readonly name: string;
   readonly attempts: readonly Attempt[];
 }
+
+/** Event registration details; `null` when unknown. */
+export interface PlayerProfile {
+  /** Division code such as MPO, FPO or RAD. */
+  readonly division: string | null;
+  readonly pdgaNumber: string | null;
+}
+
+export interface PlayerDraft extends ScoreSheet, PlayerProfile {}
 
 export interface Player extends PlayerDraft {
   readonly id: PlayerId;
 }
 
 export const PLAYER_NAME_MAX_LENGTH = 40;
+const DIVISION_MAX_LENGTH = 10;
 
 export function normalizePlayerName(raw: string): string {
   return raw.trim().replace(/\s+/g, ' ');
@@ -32,6 +43,18 @@ export function normalizePlayerName(raw: string): string {
 export function isValidPlayerName(raw: string): boolean {
   const name = normalizePlayerName(raw);
   return name.length > 0 && name.length <= PLAYER_NAME_MAX_LENGTH;
+}
+
+/** Upper-cased division code, or `null` when blank or not a short code. */
+export function normalizeDivision(raw: unknown): string | null {
+  const division = typeof raw === 'string' ? raw.trim().toUpperCase() : '';
+  return division && division.length <= DIVISION_MAX_LENGTH ? division : null;
+}
+
+/** PDGA numbers are kept as digit strings; anything else becomes `null`. */
+export function normalizePdgaNumber(raw: unknown): string | null {
+  const pdgaNumber = typeof raw === 'number' || typeof raw === 'string' ? String(raw).trim() : '';
+  return /^\d{1,9}$/.test(pdgaNumber) ? pdgaNumber : null;
 }
 
 /** Names are unique on the board, ignoring case and extra whitespace. */
@@ -59,8 +82,8 @@ export function normalizeAttempts(
   }));
 }
 
-/** Validates and normalizes a player before it is stored. */
-export function toPlayerDraft(name: string, attempts: readonly Attempt[]): PlayerDraft {
+/** Validates and normalizes a score sheet before it is stored. */
+export function toScoreSheet(name: string, attempts: readonly Attempt[]): ScoreSheet {
   const normalized = normalizePlayerName(name);
   if (!isValidPlayerName(normalized)) {
     throw new DomainError(`A player name needs 1–${PLAYER_NAME_MAX_LENGTH} characters.`);
@@ -68,8 +91,41 @@ export function toPlayerDraft(name: string, attempts: readonly Attempt[]): Playe
   return { name: normalized, attempts: normalizeAttempts(attempts) };
 }
 
-export function createPlayerDraft(name: string): PlayerDraft {
-  return toPlayerDraft(name, emptyAttempts());
+export interface NewPlayer {
+  readonly name: string;
+  readonly division?: string | null;
+  readonly pdgaNumber?: string | null;
+  readonly attempts?: readonly Attempt[];
+}
+
+/** Builds a valid new player; attempts start empty unless given. */
+export function createPlayerDraft({
+  name,
+  division = null,
+  pdgaNumber = null,
+  attempts = emptyAttempts(),
+}: NewPlayer): PlayerDraft {
+  return {
+    ...toScoreSheet(name, attempts),
+    division: normalizeDivision(division),
+    pdgaNumber: normalizePdgaNumber(pdgaNumber),
+  };
+}
+
+/** Same person: matched by PDGA number when both have one, otherwise by name. */
+export function isSamePlayer(player: PlayerDraft, other: PlayerDraft): boolean {
+  if (player.pdgaNumber && other.pdgaNumber) {
+    return player.pdgaNumber === other.pdgaNumber;
+  }
+  return player.name.toLocaleLowerCase() === other.name.toLocaleLowerCase();
+}
+
+/** Roster entries that are not on the board yet. */
+export function findMissingPlayers(
+  board: readonly Player[],
+  roster: readonly PlayerDraft[],
+): PlayerDraft[] {
+  return roster.filter((entry) => !board.some((player) => isSamePlayer(player, entry)));
 }
 
 /** Returns new attempts with one disc set to `points` (`null` clears it). */
@@ -90,7 +146,7 @@ export function recordDisc(
   );
 }
 
-export function sameDraft(first: PlayerDraft, second: PlayerDraft): boolean {
+export function sameScoreSheet(first: ScoreSheet, second: ScoreSheet): boolean {
   return (
     first.name === second.name &&
     first.attempts.length === second.attempts.length &&

@@ -11,6 +11,7 @@ export interface AttemptSummary {
 export interface LeaderboardEntry {
   readonly playerId: PlayerId;
   readonly name: string;
+  readonly division: string | null;
   /** Competition rank (1, 2, 2, 4…); `null` until the player completes every attempt. */
   readonly rank: number | null;
   /** Final score — all attempts added up; `null` while the player is still playing. */
@@ -64,6 +65,7 @@ export function rankPlayers(players: readonly Player[]): LeaderboardEntry[] {
     return {
       playerId: row.player.id,
       name: row.player.name,
+      division: row.player.division,
       rank,
       total: row.total,
       runningTotal: row.runningTotal,

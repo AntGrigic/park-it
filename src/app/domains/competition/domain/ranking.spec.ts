@@ -3,7 +3,13 @@ import { rankPlayers, summarize } from './ranking';
 
 function player(id: string, ...attempts: DiscPoints[][]): Player {
   const padded = [...attempts, [null, null, null], [null, null, null]].slice(0, 3);
-  return { id, name: id, attempts: padded.map((discs) => ({ discs })) };
+  return {
+    id,
+    name: id,
+    division: null,
+    pdgaNumber: null,
+    attempts: padded.map((discs) => ({ discs })),
+  };
 }
 
 describe('rankPlayers', () => {

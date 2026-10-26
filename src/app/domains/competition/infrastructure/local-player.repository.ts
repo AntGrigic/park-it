@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, delay, Observable } from 'rxjs';
-import type { Player, PlayerDraft, PlayerId } from '../domain/player';
+import type { Player, PlayerDraft, PlayerId, ScoreSheet } from '../domain/player';
 import { PlayerRepository } from '../domain/player.repository';
 import { fromPlayerDocument, toPlayerDocument } from './player.document';
 import { DEMO_PLAYERS } from './demo-players';
@@ -18,12 +18,17 @@ export class LocalPlayerRepository extends PlayerRepository {
   }
 
   async add(draft: PlayerDraft): Promise<void> {
-    this.commit([...this.players$.value, { id: crypto.randomUUID(), ...draft }]);
+    await this.addMany([draft]);
   }
 
-  async update(id: PlayerId, draft: PlayerDraft): Promise<void> {
+  async addMany(drafts: readonly PlayerDraft[]): Promise<void> {
+    const added = drafts.map((draft) => ({ id: crypto.randomUUID(), ...draft }));
+    this.commit([...this.players$.value, ...added]);
+  }
+
+  async update(id: PlayerId, sheet: ScoreSheet): Promise<void> {
     this.commit(
-      this.players$.value.map((player) => (player.id === id ? { id, ...draft } : player)),
+      this.players$.value.map((player) => (player.id === id ? { ...player, ...sheet } : player)),
     );
   }
 
