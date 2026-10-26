@@ -24,12 +24,18 @@ export class FirestorePlayerRepository extends PlayerRepository {
     return new Observable<readonly Player[]>((subscriber) =>
       onSnapshot(
         this.players,
-        (snapshot) =>
+        (snapshot) => {
+          // An empty answer from the local cache only means the server has not replied yet
+          // (e.g. offline); passing it on would make a full board look empty.
+          if (snapshot.empty && snapshot.metadata.fromCache) {
+            return;
+          }
           subscriber.next(
             snapshot.docs.map((playerSnapshot) =>
               fromPlayerDocument(playerSnapshot.id, playerSnapshot.data()),
             ),
-          ),
+          );
+        },
         (error) => subscriber.error(error),
       ),
     );
